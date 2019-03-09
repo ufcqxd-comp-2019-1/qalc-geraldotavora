@@ -55,7 +55,7 @@ public class Scanner {
             do {
                 lexema.append(source.getCurrentChar());
                 source.advance();
-            } while (Character.isDigit(source.getCurrentChar()));
+            } while (Character.isDigit(source.getCurrentChar()) && !Character.isAlphabetic(source.getCurrentChar()));
 
             String stringValue = lexema.toString();
 
@@ -235,7 +235,7 @@ public class Scanner {
             return new WhiteToken(currentLine, whiteStart, stringValue);
         }
 
-        // TODO Recuperação de erros.
+        // TODO Recuperação de erros..
 
         return null;
     }
