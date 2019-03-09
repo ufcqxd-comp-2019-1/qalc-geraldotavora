@@ -1,8 +1,6 @@
 package br.ufc.comp.qalc.frontend;
 
-import br.ufc.comp.qalc.frontend.token.EOFToken;
-import br.ufc.comp.qalc.frontend.token.NumberToken;
-import br.ufc.comp.qalc.frontend.token.Token;
+import br.ufc.comp.qalc.frontend.token.*;
 
 import java.io.IOException;
 
@@ -61,7 +59,180 @@ public class Scanner {
 
             String stringValue = lexema.toString();
 
+
             return new NumberToken(currentLine, lexemeStart, stringValue);
+
+        } else if(source.getCurrentChar() == '$'){
+            StringBuilder lexem = new StringBuilder();
+            lexem.append(source.getCurrentChar());
+            source.advance();
+
+            if(Character.isAlphabetic(source.getCurrentChar())) {
+
+                long currentLine = source.getCurrentLine();
+                long lexemStart = source.getCurrentColumn();
+
+                do {
+                    lexem.append(source.getCurrentChar());
+                    source.advance();
+                } while (Character.isAlphabetic(source.getCurrentChar()));
+
+                String stringValue = lexem.toString();
+
+                return new VariableIdentifierToken(currentLine, lexemStart, stringValue);
+            }
+
+            if(Character.isDigit(source.getCurrentChar()) || source.getCurrentChar() == '?'){
+                long currentLine = source.getCurrentLine();
+                long lexemStart = source.getCurrentColumn();
+
+                do {
+                    lexem.append(source.getCurrentChar());
+                    source.advance();
+                } while(Character.isDigit(source.getCurrentChar()) || source.getCurrentChar() == '?');
+
+                String stringValue = lexem.toString();
+
+                if(Double.parseDouble(stringValue.substring(1)) == 0){
+                    System.out.println("sequência apenas de caracteres 0 não é permitida");
+                }else {
+                    return new ResultIdentifierToken(currentLine, lexemStart, stringValue);
+                }
+            }
+        } else if(source.getCurrentChar() == '@'){
+            StringBuilder lexem = new StringBuilder();
+            lexem.append(source.getCurrentChar());
+            source.advance();
+
+            if(Character.isAlphabetic(source.getCurrentChar()) || Character.isDigit(source.getCurrentChar())){
+
+                long currentLine = source.getCurrentLine();
+                long lexemStart = source.getCurrentColumn();
+
+                do{
+                    lexem.append(source.getCurrentChar());
+                    source.advance();
+
+                } while(Character.isAlphabetic(source.getCurrentChar()) || Character.isDigit(source.getCurrentChar()));
+
+                String stringValue = lexem.toString();
+                return new FunctionIdentifierToken(currentLine, lexemStart, stringValue);
+            }
+        } else if(source.getCurrentChar() == '='){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new AtribToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == '+'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new PlusToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == '-'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new MinusToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == '*'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new TimesToken(currentLine, lexemStart, stringValue);
+        } else if(source.getCurrentChar() == '/'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new DivToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == '%'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new ModToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == '^'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new PowToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == '('){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new LparenToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == ')'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new RparenToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == ';'){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new SemiToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == ','){
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+            String stringValue = lexem.append(source.getCurrentChar()).toString();
+
+            return new CommaToken(currentLine, lexemStart, stringValue);
+
+        } else if(source.getCurrentChar() == '#'){
+
+            StringBuilder lexem = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long lexemStart = source.getCurrentColumn();
+
+            do{
+                lexem.append(source.getCurrentChar());
+                source.advance();
+
+            } while(source.getCurrentChar() != '\n');
+
+            String stringValue = lexem.toString();
+            return new ComentToken(currentLine, lexemStart, stringValue);
+
+        }else if(source.getCurrentChar() == '\n' || source.getCurrentChar() == '\t' || source.getCurrentChar() == ' '){
+            StringBuilder white = new StringBuilder();
+            long currentLine = source.getCurrentLine();
+            long whiteStart = source.getCurrentColumn();
+
+            do{
+                white.append(source.getCurrentChar());
+                source.advance();
+            } while(source.getCurrentChar() == '\n' || source.getCurrentChar() == '\t' || source.getCurrentChar() == ' ');
+
+            String stringValue = white.toString();
+
+            return new WhiteToken(currentLine, whiteStart, stringValue);
         }
 
         // TODO Recuperação de erros.
